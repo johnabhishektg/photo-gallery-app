@@ -4,14 +4,25 @@ import { getImage } from "./api";
 
 const App = () => {
   const [imageList, setImageList] = useState([]);
+  const [nextCursor, setNextCursor] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const respData = await getImage();
       setImageList(respData.resources);
+      setNextCursor(respData.next_cursor);
     };
     fetchData();
   }, []);
+
+  const handleLoadMoreButtonClick = async () => {
+    const respData = await getImage(nextCursor);
+    setImageList((currentImageList) => [
+      ...currentImageList,
+      ...respData.resources,
+    ]);
+    setNextCursor(respData.next_cursor);
+  };
 
   return (
     <div className="App">
@@ -34,7 +45,9 @@ const App = () => {
       </div>
 
       <div className="load-more">
-        <button>Load more</button>
+        {nextCursor && (
+          <button onClick={handleLoadMoreButtonClick}>Load more</button>
+        )}
       </div>
     </div>
   );

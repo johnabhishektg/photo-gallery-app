@@ -11,7 +11,7 @@ app.use(json());
 
 const { parsed: config } = dotenv.config();
 
-const BASE_URL = `https://api.cloudinary.com/v1_1/${config.API_CLOUD}`;
+const BASE_URL = `https://api.cloudinary.com/v1_1/${config.API_CLOUD}/resources/image`;
 
 const auth = {
   username: config.API_KEY,
@@ -19,8 +19,11 @@ const auth = {
 };
 
 app.get("/photos", async (req, res) => {
-  const response = await axios.get(BASE_URL + "/resources/image", {
+  const response = await axios.get(BASE_URL, {
     auth,
+    params: {
+      next_cursor: req.query.next_cursor,
+    },
   });
   return res.send(response.data);
 });
