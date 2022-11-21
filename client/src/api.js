@@ -14,3 +14,17 @@ export const getImage = async (nextCursor) => {
 
   return respData;
 };
+
+export const searchImages = async (searchValue, nextCursor) => {
+  const params = new URLSearchParams();
+  params.append("expression", searchValue);
+
+  if (nextCursor) {
+    params.append("next_cursor", nextCursor);
+  }
+
+  const resp = await fetch(`${API_URL}/search?${params}`);
+  const respData = await resp.json();
+
+  return respData;
+};
